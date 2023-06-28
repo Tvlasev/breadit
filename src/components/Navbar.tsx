@@ -1,10 +1,12 @@
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { buttonVariants } from "./ui/Button";
 import { Icons } from "./ui/Icons";
-import { getSession } from "next-auth/react";
+import { buttonVariants } from "./ui/Button";
+import { UserAccountNav } from "./UserAccountNav";
 
 const Navbar = async () => {
-  const session = await getSession();
+  const session = await getServerSession(authOptions);
 
   return (
     <div className="fixed top-0 inset-x-0 h-fit bg-zinc-100 border-b border-zinc-300 z-[10] py-2">
@@ -18,7 +20,11 @@ const Navbar = async () => {
         </Link>
 
         {/* search bar */}
-        {!session && (
+
+        {/* actions */}
+        {session?.user ? (
+          <UserAccountNav user={session.user} />
+        ) : (
           <Link href="/sign-in" className={buttonVariants()}>
             Sign In
           </Link>
